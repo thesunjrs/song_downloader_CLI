@@ -1,2 +1,2 @@
 # song_downloader
-Downloads best quality song from jiosaavn
+Downloads best quality (320kbps) songs with all metadata
