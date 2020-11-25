@@ -62,16 +62,11 @@ if __name__ == "__main__":
             try:
                 song_data = jiosaavn.search_song(song_name.replace('with lyrics', '').strip(), lyrics)
                 print("Which one of these you want?")
-                if len(song_data) >= 5:
-                    for i in range(5):
-                        song_name = song_data[i]['song']
-                        artist_name = song_data[i]['primary_artists']
-                        print("{}. {} by {}".format(i+1, song_name, artist_name))
-                else:
-                    for i in range(len(song_data)):
-                        song_name = song_data[i]['song']
-                        artist_name = song_data[i]['primary_artists']
-                        print("{}. {} by {}".format(i+1, song_name, artist_name))
+
+                for i in range(len(song_data)):
+                    song_name = song_data[i]['song']
+                    artist_name = song_data[i]['primary_artists']
+                    print("{}. {} by {}".format(i+1, song_name, artist_name))
 
                 pref = input("Enter song number(Hit Enter for Default i,e 1): ").strip(".")
                 if pref == '':
