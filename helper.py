@@ -1,8 +1,7 @@
 import base64
-import jiosaavn
 from pyDes import *
 
-def format_song(data,lyrics):
+def format_song(data):
     try:
         url = data['media_preview_url']
         url = url.replace("preview", "aac")
@@ -24,32 +23,10 @@ def format_song(data,lyrics):
     data["primary_artists"] = format(data["primary_artists"])
     data['image'] = data['image'].replace("150x150","500x500")
 
-    if lyrics:
-        if data['has_lyrics']=='true':
-            data['lyrics'] = jiosaavn.get_lyrics(data['id'])
-        else:
-            data['lyrics'] = None
-
     try:
         data['copyright_text'] = data['copyright_text'].replace("&copy;","©")
     except KeyError:
         pass
-    return data
-
-def format_album(data,lyrics):
-    data['image'] = data['image'].replace("150x150","500x500")
-    data['name'] = format(data['name'])
-    data['primary_artists'] = format(data['primary_artists'])
-    data['title'] = format(data['title'])
-    for song in data['songs']:
-        song = format_song(song,lyrics)
-    return data
-
-def format_playlist(data,lyrics):
-    data['firstname'] = format(data['firstname'])
-    data['listname'] = format(data['listname'])
-    for song in data['songs']:
-        song = format_song(song,lyrics)
     return data
 
 def format(string):
