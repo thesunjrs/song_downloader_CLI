@@ -62,7 +62,7 @@ def main():
                 pref = input("Enter song number(Hit Enter for Default i,e 1): ").replace(".", '')
                 if pref == '':
                     pref = 1
-                elif pref.isnumeric and pref <= len(song_data):
+                elif pref.isnumeric and int(pref) <= len(song_data):
                     pref = int(pref)
                 else:
                     print("Invalid Value Entered")
