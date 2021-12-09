@@ -56,8 +56,9 @@ def main():
                 print("Which one of these you want?")
                 for i in range(len(song_data)):
                     song_name = song_data[i]['title']
-                    artist_name = song_data[i]['more_info']['primary_artists']
-                    print("{}. {} by {}".format(i+1, song_name, artist_name))
+                    subtitle = song_data[i]['description']
+                    pre = "{}. ".format(i+1)
+                    print("{}{}\n{}{}".format(pre, song_name, ' '*len(pre), subtitle))
 
                 pref = input("Enter song number(Hit Enter for Default i,e 1): ").replace(".", '')
                 if pref == '':
@@ -70,7 +71,7 @@ def main():
 
                 song_id = song_data[pref-1]['id']
                 song_data = jiosaavn.get_song(str(song_id))
-                song_name = song_data['song'].replace('?', '').strip()
+                song_name = song_data['song'].replace('?', '').replace(':','').strip()
                 artist_name = song_data['primary_artists']
                 featured_artist = song_data['featured_artists']
                 song_title = "{} - {}".format(song_name, artist_name)
