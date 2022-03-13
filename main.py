@@ -6,7 +6,7 @@ import os
 from mutagen.mp4 import MP4, MP4Cover
 import threading
 
-download_path = "./Songs" #Provide download path here
+download_path = "D:\Songs\Songs" #Provide download path here
 
 def dwnld_sng(song_dwn_url, song_title):
     with requests.get(song_dwn_url, stream=True) as r, open("{}/{}.m4a".format(download_path, song_title), "wb") as f:
@@ -47,56 +47,61 @@ def main():
     if not isdir:
         os.mkdir(download_path)
     while True:
-        song_name = input("Enter Song Name: ")
-        if song_name == "":
-            continue
-        else:
-            try:
-                song_data = jiosaavn.search_for_song(song_name.replace('with lyrics', '').strip())
-                print("Which one of these you want?")
-                for i in range(len(song_data)):
-                    song_name = song_data[i]['title']
-                    subtitle = song_data[i]['description']
-                    pre = "{}. ".format(i+1)
-                    print("{}{}\n{}{}".format(pre, song_name, ' '*len(pre), subtitle))
+        try:
+            song_name = input("Enter Song Name: ")
+            if song_name == "":
+                continue
+            else:
+                try:
+                    song_data = jiosaavn.search_for_song(song_name.replace('with lyrics', '').strip())
+                    print("Which one of these you want?")
+                    for i in range(len(song_data)):
+                        song_name = song_data[i]['title']
+                        subtitle = song_data[i]['description']
+                        pre = "{}. ".format(i+1)
+                        print("{}{}\n{}{}".format(pre, song_name, ' '*len(pre), subtitle))
 
-                pref = input("Enter song number(Hit Enter for Default i,e 1): ").replace(".", '')
-                if pref == '':
-                    pref = 1
-                elif pref.isnumeric and int(pref) <= len(song_data):
-                    pref = int(pref)
-                else:
-                    print("Invalid Value Entered")
-                    continue
+                    pref = input("Enter song number(Hit Enter for Default i,e 1): ").replace(".", '')
+                    if pref == '':
+                        pref = 1
+                    elif pref.isnumeric and int(pref) <= len(song_data):
+                        pref = int(pref)
+                    else:
+                        print("Invalid Value Entered")
+                        continue
 
-                song_id = song_data[pref-1]['id']
-                song_data = jiosaavn.get_song(str(song_id))
-                song_name = song_data['song'].replace('?', '').replace(':','').strip()
-                artist_name = song_data['primary_artists']
-                featured_artist = song_data['featured_artists']
-                song_title = "{} - {}".format(song_name, artist_name)
-                audio_path = "{}/{}.m4a".format(download_path, song_title)
-                img_path = "{}/{}.jpg".format(download_path, song_title)
+                    song_id = song_data[pref-1]['id']
+                    song_data = jiosaavn.get_song(str(song_id))
+                    song_name = song_data['song'].replace('?', '').replace(':','').strip()
+                    artist_name = song_data['primary_artists']
+                    featured_artist = song_data['featured_artists']
+                    song_title = "{} - {}".format(song_name, artist_name)
+                    audio_path = "{}/{}.m4a".format(download_path, song_title)
+                    img_path = "{}/{}.jpg".format(download_path, song_title)
 
-                album = song_data['album']
-                year = song_data['year']
-                lang = (song_data['language'])
-                lang = lang[0].upper() + lang[1:]
-                image_url = song_data['image']
-                
-                print("Selected {} by {}".format(song_name, artist_name))
+                    album = song_data['album']
+                    year = song_data['year']
+                    lang = (song_data['language'])
+                    lang = lang[0].upper() + lang[1:]
+                    image_url = song_data['image']
+                    
+                    print("Selected {} by {}".format(song_name, artist_name))
 
-                t1 = threading.Thread(target=dwnld_img, args=(image_url, img_path))
-                t1.start()
-                dwnld_sng(song_dwn_url = song_data['media_url'], song_title = song_title)
-                fname = "{}/{} - {}.m4a".format(download_path, artist_name, song_name)
-                t1.join()
-                #print("Saving matadata")
-                save_metadata(audio_path = audio_path, song_name = song_name, artist_name = artist_name, featured_artist = featured_artist, img_path = img_path, album = album, year = year, genre = lang)
-                os.remove(img_path)
-            except Exception as e:
-                print("Failed to Download Song")
-                print("ERROR: {}".format(e))
+                    t1 = threading.Thread(target=dwnld_img, args=(image_url, img_path))
+                    t1.start()
+                    dwnld_sng(song_dwn_url = song_data['media_url'], song_title = song_title)
+                    fname = "{}/{} - {}.m4a".format(download_path, artist_name, song_name)
+                    t1.join()
+                    #print("Saving matadata")
+                    save_metadata(audio_path = audio_path, song_name = song_name, artist_name = artist_name, featured_artist = featured_artist, img_path = img_path, album = album, year = year, genre = lang)
+                    os.remove(img_path)
+                except Exception as e:
+                    print("Failed to Download Song")
+                    print("ERROR: {}".format(e))
+        
+        except KeyboardInterrupt:
+            print("\nExiting Program")
+            break
 
 if __name__ == "__main__":
     main()
