@@ -8,15 +8,13 @@ def search_for_song(query):
     search_base_url = endpoints.search_base_url+query
     response = requests.get(search_base_url).text.encode().decode('unicode-escape')
     response = json.loads(response)
-    song_response = response['songs']['data']
-    return song_response
+    return response['songs']['data']
 
 def get_song(id):
     song_details_base_url = endpoints.song_details_base_url+id
     song_response = requests.get(song_details_base_url).text.encode().decode('unicode-escape')
     song_response = json.loads(song_response)
-    song_data = helper.format_song(song_response[id])
-    return song_data
+    return helper.format_song(song_response[id])
 
 def get_playlist(listId,lyrics):
     try:
